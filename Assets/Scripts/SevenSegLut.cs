@@ -4,6 +4,11 @@ using UnityEngine;
 public static class SevenSegLut
 {
     // A B C D E F G (MSB→LSB)
+    //-A-
+    //F-B
+    //-G-
+    //E-C
+    //-D-
     public static readonly Dictionary<int, byte> DigitMasks = new Dictionary<int, byte>
     {
         { 0,  0b111_1110 },
@@ -19,7 +24,7 @@ public static class SevenSegLut
 
         // Special symbols
         { (int)SevenSegSymbol.Empty,    0b000_0000 },
-        { (int)SevenSegSymbol.Error,    0b110_1101 },
+        { (int)SevenSegSymbol.Error,    0b100_1111 },
 
         { (int)SevenSegSymbol.LoadingA, 0b100_0000 }, // A
         { (int)SevenSegSymbol.LoadingB, 0b010_0000 }, // B
