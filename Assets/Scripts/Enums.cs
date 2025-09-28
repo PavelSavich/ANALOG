@@ -24,3 +24,10 @@ public enum SevenSegSymbol
     LoadingF = 17,
     LoadingG = 18
 }
+
+public enum AfterErrorBehavior 
+{
+    ResetToZero,
+    RevertToLastValid 
+}
+

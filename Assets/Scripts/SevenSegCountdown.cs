@@ -3,12 +3,16 @@ using UnityEngine;
 public class SevenSegCountdown : MonoBehaviour
 {
     [Header("Target 7-segment display")]
-    public SevenSegRenderer target;   // Assign your SevenSegRenderer in Inspector
+    [SerializeField]
+    private SevenSegRenderer target;   // Assign your SevenSegRenderer in Inspector
 
     [Header("Playback Settings")]
     [Min(0.1f)]
-    public float secondsPerDigit = 1f; // Time to show each digit
-    public bool playOnEnable = true;
+    [SerializeField]
+    private float secondsPerDigit = 1f; // Time to show each digit
+
+    [SerializeField]
+    private bool playOnEnable = true;
 
     private float _timer;
     private int _currentDigit = 9;
@@ -21,21 +25,29 @@ public class SevenSegCountdown : MonoBehaviour
         _playing = playOnEnable;
 
         if (target != null)
+        {
             ShowDigit(_currentDigit);
+        }
     }
 
     private void Update()
     {
-        if (!_playing || target == null) return;
+        if (!_playing || target == null)
+        {
+            return;
+        }
 
         _timer += Time.deltaTime;
+
         if (_timer >= secondsPerDigit)
         {
             _timer -= secondsPerDigit;
             _currentDigit--;
 
             if (_currentDigit < 0)
-                _currentDigit = 9; // loop back to 9
+            {
+                _currentDigit = 9; 
+            }
 
             ShowDigit(_currentDigit);
         }
@@ -49,12 +61,24 @@ public class SevenSegCountdown : MonoBehaviour
     }
 
     // --- Public controls ---
-    public void Play() { _playing = true; }
-    public void Pause() { _playing = false; }
+    public void Play() 
+    {
+        _playing = true;
+    }
+
+    public void Pause()
+    {
+        _playing = false; 
+    }
+
     public void ResetCountdown()
     {
         _currentDigit = 9;
         _timer = 0f;
-        if (target != null) ShowDigit(_currentDigit);
+
+        if (target != null)
+        {
+            ShowDigit(_currentDigit);
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 public static class SevenSegLut
 {
@@ -9,6 +8,7 @@ public static class SevenSegLut
     //-G-
     //E-C
     //-D-
+
     public static readonly Dictionary<int, byte> DigitMasks = new Dictionary<int, byte>
     {
         { 0,  0b111_1110 },
@@ -37,6 +37,6 @@ public static class SevenSegLut
 
     public static byte ForDigit(int d)
     {
-        return DigitMasks.TryGetValue(d, out var mask) ? mask : (byte)0;
+        return DigitMasks.TryGetValue(d, out byte mask) ? mask : (byte)0;
     }
 }

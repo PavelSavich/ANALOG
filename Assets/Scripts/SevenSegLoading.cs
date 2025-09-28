@@ -3,16 +3,22 @@ using UnityEngine;
 public class SevenSegLoading : MonoBehaviour
 {
     [Header("Target 7-segment display")]
-    public SevenSegRenderer target;   // Assign your SevenSegRenderer in Inspector
+    [SerializeField]
+    private SevenSegRenderer target;
 
     [Header("Playback")]
     [Min(0.01f)]
-    public float framesPerSecond = 8f;
-    public bool playOnEnable = true;
-    public bool loop = true;
+    [SerializeField]
+    private float framesPerSecond = 8f;
+
+    [SerializeField]
+    private bool playOnEnable = true;
+
+    [SerializeField]
+    private bool loop = true;
 
     private float _timer;
-    private int _frame;       // 0..5  -> LoadingA..LoadingF
+    private int _frame;
     private bool _playing;
 
     private const int FrameCount = 6;
@@ -24,12 +30,17 @@ public class SevenSegLoading : MonoBehaviour
         _playing = playOnEnable;
 
         if (target != null)
+        {
             ShowFrame(_frame);
+        }
     }
 
     private void Update()
     {
-        if (!_playing || target == null) return;
+        if (!_playing || target == null)
+        {
+            return;
+        }
 
         _timer += Time.deltaTime;
         float frameDur = 1f / Mathf.Max(0.01f, framesPerSecond);
@@ -41,7 +52,10 @@ public class SevenSegLoading : MonoBehaviour
 
             if (_frame >= FrameCount)
             {
-                if (loop) _frame = 0;
+                if (loop)
+                {
+                    _frame = 0;
+                }
                 else
                 {
                     _frame = FrameCount - 1;
@@ -55,22 +69,32 @@ public class SevenSegLoading : MonoBehaviour
 
     private void ShowFrame(int index)
     {
-        // Requires SevenSegSymbol.LoadingA..LoadingF to be consecutive
         byte mask = SevenSegLut.ForDigit((int)SevenSegSymbol.LoadingA + index);
 
-        // Drive the SevenSegRenderer
         target.map.bits = mask;
         target.Apply();
     }
 
     // --- Public controls ---
-    public void Play() { _playing = true; }
-    public void Pause() { _playing = false; }
+    public void Play()
+    {
+        _playing = true; 
+    }
+
+    public void Pause() 
+    { 
+        _playing = false;
+    }
+
     public void Stop()
     {
         _playing = false;
         _frame = 0;
-        if (target != null) ShowFrame(_frame);
+
+        if (target != null)
+        {
+            ShowFrame(_frame);
+        }
     }
 
     public void SetSpeed(float fps)
