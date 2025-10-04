@@ -175,6 +175,40 @@ public class LEDDisplay : MonoBehaviour
         }
     }
 
+    public void Blit(bool[,] bitmap, bool[,] caretMask, Color caretColor)
+    {
+        if (bitmap == null) { Clear(); return; }
+        int cols = bitmap.GetLength(0);
+        int rows = bitmap.GetLength(1);
+
+        int w = Mathf.Min(cols, _cols);
+        int h = Mathf.Min(rows, _rows);
+
+        for (int y = 0; y < _rows; y++)
+        {
+            for (int x = 0; x < _cols; x++)
+            {
+                int idx = y * _cols + x;
+                if (idx >= _pixels.Count) continue;
+
+                bool on = (x < w && y < h) ? bitmap[x, y] : false;
+
+                // If caret mask provided and this cell is part of the caret, use caretColor.
+                if (caretMask != null &&
+                    x < caretMask.GetLength(0) &&
+                    y < caretMask.GetLength(1) &&
+                    caretMask[x, y])
+                {
+                    _pixels[idx].color = caretColor;
+                }
+                else
+                {
+                    _pixels[idx].color = on ? onColor : offColor;
+                }
+            }
+        }
+    }
+
     private void ApplyLayout()
     {
         if (grid == null || root == null)

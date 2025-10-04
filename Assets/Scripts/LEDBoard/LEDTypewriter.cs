@@ -43,7 +43,28 @@ public class LEDTypewriter : MonoBehaviour
     private float lightPunctuationPauseSeconds = 0.07f;
 
     [Tooltip("Auto start typing on OnEnable")]
-    [SerializeField] private bool autoStart = true;
+    [SerializeField] 
+    private bool autoStart = true;
+
+    [Header("Caret")]
+    [SerializeField] 
+    private bool showCaretWhileTyping = true;
+
+    [SerializeField] 
+    private float caretBlinkHz = 2f;
+
+    [SerializeField] 
+    private int caretThicknessRows = 1;
+
+    [SerializeField] 
+    private int caretInsetRows = 0;
+
+    [SerializeField] 
+    private Color caretColor = new Color(0.15f, 0.9f, 0.2f, 1f);
+
+    private bool _caretOn = true;
+    private float _caretTimer = 0f;
+
 
     public System.Action<char, int> OnCharPrinted;
     public System.Action OnTypingFinished;
@@ -167,7 +188,7 @@ public class LEDTypewriter : MonoBehaviour
                 continue;
             }
 
-            var g = font.GetGlyph(c);
+            LEDFont.Glyph g = font.GetGlyph(c);
             int w = g != null ? g.Width : font.glyphWidth;
             _linear.Add(new GlyphToken
             {
@@ -192,6 +213,9 @@ public class LEDTypewriter : MonoBehaviour
     private IEnumerator TypeRoutine()
     {
         float acc = 0f;
+        _caretOn = true;
+        _caretTimer = 0f;
+
         while (_visibleChars < _linear.Count)
         {
             float dt = Time.deltaTime;
@@ -205,7 +229,7 @@ public class LEDTypewriter : MonoBehaviour
                 char printedChar = _linear[Mathf.Clamp(_visibleChars - 1, 0, _linear.Count - 1)].c;
                 OnCharPrinted?.Invoke(printedChar, _visibleChars - 1);
 
-                RenderPrefix(_visibleChars);
+                RenderPrefix(_visibleChars, drawCaret: showCaretWhileTyping && _visibleChars < _linear.Count);
 
                 if (printedChar == '.' || printedChar == '!' || printedChar == '?')
                 {
@@ -223,12 +247,28 @@ public class LEDTypewriter : MonoBehaviour
                 }
             }
 
+            if (showCaretWhileTyping && caretBlinkHz > 0f && _visibleChars < _linear.Count)
+            {
+                _caretTimer += dt;
+                float period = 1f / caretBlinkHz;
+                if (_caretTimer >= period)
+                {
+                    _caretTimer -= period;
+                    _caretOn = !_caretOn;
+
+                    RenderPrefix(_visibleChars, drawCaret: true);
+                }
+            }
+
             yield return null;
         }
 
         _typingRoutine = null;
+
+        RenderPrefix(_linear.Count, drawCaret: false);
         OnTypingFinished?.Invoke();
     }
+
 
     private void BuildWrappedLayout(int maxWidthPixels, int maxHeightPixels, out int offW, out int offH)
     {
@@ -355,7 +395,7 @@ public class LEDTypewriter : MonoBehaviour
         offH = Mathf.Max(font.glyphHeight, totalH - font.lineSpacing);
     }
 
-    private void RenderPrefix(int visibleChars)
+    private void RenderPrefix(int visibleChars, bool drawCaret = false)
     {
         if (display == null || font == null || _lines == null)
         {
@@ -364,10 +404,10 @@ public class LEDTypewriter : MonoBehaviour
 
         int W = display.Cols;
         int H = display.Rows;
+
         bool[,] window = new bool[W, H];
 
         int shown = 0;
-
         foreach (LineLayout line in _lines)
         {
             int x = 0;
@@ -377,7 +417,7 @@ public class LEDTypewriter : MonoBehaviour
             {
                 if (shown >= visibleChars)
                 {
-                    goto FINISH;
+                    goto AFTER_DRAW;
                 }
 
                 GlyphToken tk = _linear[idx];
@@ -392,14 +432,12 @@ public class LEDTypewriter : MonoBehaviour
                     for (int gy = 0; gy < tk.g.Height; gy++)
                     {
                         int py = yTop + gy;
-
                         if (py < 0 || py >= H)
                         {
                             continue;
                         }
 
-                        string row = tk.g.rows[gy];
-
+                        var row = tk.g.rows[gy];
                         for (int gx = 0; gx < tk.g.Width; gx++)
                         {
                             int px = x + gx;
@@ -408,9 +446,7 @@ public class LEDTypewriter : MonoBehaviour
                                 continue;
                             }
 
-                            bool on = row[gx] == '#';
-
-                            if (on)
+                            if (row[gx] == '#')
                             {
                                 window[px, py] = true;
                             }
@@ -422,15 +458,107 @@ public class LEDTypewriter : MonoBehaviour
                 }
 
                 shown++;
-
                 if (shown >= visibleChars)
                 {
-                    goto FINISH;
+                    goto AFTER_DRAW;
                 }
             }
         }
 
-    FINISH:
-        display.Blit(window);
+    AFTER_DRAW:
+
+        bool[,] caretMask = null;
+
+        if (drawCaret && _caretOn && visibleChars < _linear.Count)
+        {
+            if (TryGetCursorXY(visibleChars, out int cx, out int cy))
+            {
+                caretMask = new bool[W, H];
+
+                int caretW = font.glyphWidth;
+                LEDFont.Glyph nextGlyph = _linear[visibleChars].g;
+
+                if (nextGlyph != null)
+                {
+                    caretW = nextGlyph.Width;
+                }
+
+                int thickness = Mathf.Clamp(caretThicknessRows, 1, 3);
+                int baselineY = cy + font.glyphHeight - 1 - Mathf.Max(0, caretInsetRows);
+
+                for (int t = 0; t < thickness; t++)
+                {
+                    int py = baselineY - t;
+
+                    if (py < 0 || py >= H)
+                    {
+                        continue;
+                    }
+
+                    for (int gx = 0; gx < caretW; gx++)
+                    {
+                        int px = cx + gx;
+
+                        if (px < 0 || px >= W)
+                        {
+                            continue;
+                        }
+
+                        caretMask[px, py] = true;
+                    }
+                }
+            }
+        }
+
+        if (caretMask != null)
+        {
+            display.Blit(window, caretMask, caretColor);
+        }
+        else
+        {
+            display.Blit(window);
+        }
     }
+
+
+    private bool TryGetCursorXY(int nextIndex, out int outX, out int outY)
+    {
+        outX = 0; outY = 0;
+        int count = 0;
+
+        foreach (LineLayout line in _lines)
+        {
+            int x = 0;
+            int yTop = line.y;
+
+            foreach (int idx in line.tokenIndices)
+            {
+                if (count == nextIndex)
+                {
+                    outX = x;
+                    outY = yTop;
+                    return true;
+                }
+
+                GlyphToken tk = _linear[idx];
+
+                if (tk.g != null)
+                {
+                    x += tk.g.Width;
+                    x += font.charSpacing;
+                }
+                count++;
+            }
+
+            if (count == nextIndex)
+            {
+                outX = x;
+                outY = yTop;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

@@ -7,31 +7,51 @@ public enum ScrollMode { None, Left, Right, Up, Down }
 public class LEDTextRenderer : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private LEDDisplay display;
-    [SerializeField] private LEDFont font;
+    [SerializeField]
+    private LEDDisplay display;
+
+    [SerializeField]
+    private LEDFont font;
 
     [Header("Text")]
     [TextArea(2, 6)]
-    [SerializeField] private string text = "HELLO WORLD";
-    [SerializeField] private bool upperCase = true;
-    [SerializeField] private bool trimWhitespace = false;
+    [SerializeField]
+    private string text = "HELLO WORLD";
+
+    [SerializeField]
+    private bool upperCase = true;
+
+    [SerializeField]
+    private bool trimWhitespace = false;
 
     [Header("Render Target (in pixels)")]
     [Tooltip("Display pixel width. If 0, use display current cols.")]
-    [SerializeField] private int targetCols = 0;
+    [SerializeField]
+    private int targetCols = 0;
+
     [Tooltip("Display pixel height. If 0, use display current rows.")]
-    [SerializeField] private int targetRows = 0;
+    [SerializeField]
+    private int targetRows = 0;
 
     [Header("Animation")]
-    [SerializeField] private ScrollMode scroll = ScrollMode.None;
-    [SerializeField] private float scrollSpeedPixelsPerSecond = 20f;
-    [SerializeField] private bool flashing = false;
-    [SerializeField] private float flashHz = 2f;
-    [SerializeField] private int loopGapPixels = 0;
+    [SerializeField]
+    private ScrollMode scroll = ScrollMode.None;
 
-    private bool[,] _offscreen; // whole raster of the message
+    [SerializeField] 
+    private float scrollSpeedPixelsPerSecond = 20f;
+
+    [SerializeField]
+    private bool flashing = false;
+
+    [SerializeField]
+    private float flashHz = 2f;
+
+    [SerializeField] 
+    private int loopGapPixels = 0;
+
+    private bool[,] _offscreen;
     private int _offW, _offH;
-    private float _scrollPos; // sub-pixel scroll offset (in pixels)
+    private float _scrollPos;
     private bool _flashOn = true;
     private Coroutine _animRoutine;
 
@@ -96,16 +116,13 @@ public class LEDTextRenderer : MonoBehaviour
             t = t.TrimEnd();
         }
 
-        // 1) Rasterize full string to an off-screen bitmap
         RasterizeText(t, out _offscreen, out _offW, out _offH);
 
-        // 2) Ensure the display resolution matches requested target or font height
         int cols = targetCols > 0 ? targetCols : display.Cols > 0 ? display.Cols : Mathf.Max(1, _offW);
         int rows = targetRows > 0 ? targetRows : display.Rows > 0 ? display.Rows : Mathf.Max(1, font.glyphHeight);
 
         display.SetResolution(cols, rows);
 
-        // 3) Immediately draw a frame (no scroll)
         _scrollPos = 0;
         BlitWindow();
     }
@@ -161,7 +178,6 @@ public class LEDTextRenderer : MonoBehaviour
             {
                 _scrollPos += scrollSpeedPixelsPerSecond * dt;
 
-                // Seamless wrap: period = content size + optional gap
                 int periodW = Mathf.Max(1, _offW + Mathf.Max(0, loopGapPixels));
                 int periodH = Mathf.Max(1, _offH + Mathf.Max(0, loopGapPixels));
 
@@ -169,20 +185,33 @@ public class LEDTextRenderer : MonoBehaviour
                 {
                     case ScrollMode.Left:
                     case ScrollMode.Right:
-                        if (_offW <= display.Cols && loopGapPixels == 0) _scrollPos = 0; // nothing to scroll
-                        else _scrollPos = Mathf.Repeat(_scrollPos, periodW);
+                        if (_offW <= display.Cols && loopGapPixels == 0)
+                        {
+                            _scrollPos = 0;
+                        }
+                        else
+                        {
+                            _scrollPos = Mathf.Repeat(_scrollPos, periodW);
+                        }
+
                         break;
                     case ScrollMode.Up:
                     case ScrollMode.Down:
-                        if (_offH <= display.Rows && loopGapPixels == 0) _scrollPos = 0;
-                        else _scrollPos = Mathf.Repeat(_scrollPos, periodH);
+                        if (_offH <= display.Rows && loopGapPixels == 0)
+                        {
+                            _scrollPos = 0;
+                        }
+                        else
+                        {
+                            _scrollPos = Mathf.Repeat(_scrollPos, periodH);
+                        }
+
                         break;
                 }
 
                 BlitWindow();
             }
 
-            // If neither flash nor scroll is active, just idle cheaply.
             if (!flashing && scroll == ScrollMode.None)
             {
                 yield return null;
@@ -215,7 +244,6 @@ public class LEDTextRenderer : MonoBehaviour
         {
             case ScrollMode.Left:
                 {
-                    // content moves left -> window shows increasing x from shift
                     for (int y = 0; y < Height; y++)
                     {
                         for (int x = 0; x < Width; x++)
@@ -237,7 +265,6 @@ public class LEDTextRenderer : MonoBehaviour
                 }
             case ScrollMode.Right:
                 {
-                    // content moves right -> start moves backwards
                     for (int y = 0; y < Height; y++)
                     {
                         for (int x = 0; x < Width; x++)
@@ -325,7 +352,6 @@ public class LEDTextRenderer : MonoBehaviour
 
         display.Blit(window);
 
-        // --- local helpers (looping with optional blank gap) ---
         bool SampleLoopX(int sx, int sy)
         {
             if (sy < 0 || sy >= _offH)
@@ -333,11 +359,11 @@ public class LEDTextRenderer : MonoBehaviour
                 return false;
             }
 
-            int mod = ((sx % periodW) + periodW) % periodW; // positive modulo
+            int mod = ((sx % periodW) + periodW) % periodW; 
 
             if (mod >= _offW)
             {
-                return false;                 // inside the gap
+                return false; 
             }
 
             return _offscreen[mod, sy];
@@ -354,7 +380,7 @@ public class LEDTextRenderer : MonoBehaviour
 
             if (mod >= _offH)
             {
-                return false;                 // inside the gap
+                return false; 
             }
 
             return _offscreen[sx, mod];
@@ -364,7 +390,6 @@ public class LEDTextRenderer : MonoBehaviour
 
     private void RasterizeText(string text, out bool[,] map, out int totalWidth, out int totalHeight)
     {
-        // First pass: measure required size
         int lineWidth = 0;
         int maxWidth = 0;
         int totalGlyphHeight = font.glyphHeight;
@@ -383,6 +408,7 @@ public class LEDTextRenderer : MonoBehaviour
             }
 
             LEDFont.Glyph glyph = font.GetGlyph(character);
+
             if (glyph == null)
             {
                 continue;
@@ -414,7 +440,6 @@ public class LEDTextRenderer : MonoBehaviour
 
             LEDFont.Glyph g = tk.g;
 
-            // Blit glyph at (characterX, characterY)
             for (int gy = 0; gy < g.Height; gy++)
             {
                 for (int gx = 0; gx < g.Width; gx++)
