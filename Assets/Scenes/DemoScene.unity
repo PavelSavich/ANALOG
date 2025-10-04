@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 117935073}
   - component: {fileID: 117935072}
   m_Layer: 5
-  m_Name: Text
+  m_Name: TextScroll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,11 +152,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2123129512}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 1800, y: 200}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &117935072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,7 +175,7 @@ MonoBehaviour:
     Vv Ww Xx Yy Zz
   upperCase: 0
   trimWhitespace: 0
-  targetCols: 180
+  targetCols: 150
   targetRows: 0
   scroll: 1
   scrollSpeedPixelsPerSecond: 5
@@ -219,7 +219,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 10, y: 10}
@@ -484,6 +484,113 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1 &870391793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 870391794}
+  - component: {fileID: 870391797}
+  - component: {fileID: 870391796}
+  - component: {fileID: 870391795}
+  m_Layer: 5
+  m_Name: TextType
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &870391794
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870391793}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2123129512}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -200}
+  m_SizeDelta: {x: 1800, y: 200}
+  m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &870391795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870391793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c41157e4cacef34a8d620d1638eaa0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  display: {fileID: 870391796}
+  font: {fileID: 11400000, guid: a2b45f56aaf1a2d49871e77a92f8f6a1, type: 2}
+  text: Hello world! Hello world! Hello world! Hello world! Hello world! Hello world!
+    Hello world! Hello world! Hello world! Hello world! Hello world! Hello world!
+    Hello world! Hello world! Hello world!
+  upperCase: 0
+  trimWhitespaceEnd: 0
+  targetCols: 300
+  targetRows: 24
+  charsPerSecond: 5
+  punctuationPauseSeconds: 0.15
+  lightPunctuationPauseSeconds: 0.07
+  autoStart: 1
+--- !u!114 &870391796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870391793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b77116fed2cdee245aab4996246c5dbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {fileID: 870391794}
+  grid: {fileID: 870391797}
+  pixelPrefab: {fileID: 3352645587524370846, guid: 26818af92939fd14daeec0e01021ac4a, type: 3}
+  offColor: {r: 0.08, g: 0.08, b: 0.08, a: 1}
+  onColor: {r: 0.16432583, g: 0.6698113, b: 0, a: 1}
+  spacing: {x: 1, y: 1}
+  autoFitCellSize: 0
+  explicitCellSize: {x: 5, y: 5}
+--- !u!114 &870391797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870391793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 5, y: 5}
+  m_Spacing: {x: 1, y: 1}
+  m_Constraint: 1
+  m_ConstraintCount: 1
 --- !u!224 &1307489008 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5302037130140515737, guid: e2c8a4dffb12a2f47a60f5a6158d363f, type: 3}
@@ -672,6 +779,7 @@ RectTransform:
   - {fileID: 1408475538}
   - {fileID: 3460953165511489450}
   - {fileID: 117935071}
+  - {fileID: 870391794}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
