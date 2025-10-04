@@ -62,6 +62,11 @@ public class LEDTypewriter : MonoBehaviour
     [SerializeField] 
     private Color caretColor = new Color(0.15f, 0.9f, 0.2f, 1f);
 
+    [Header("On Complete")]
+    [SerializeField] private CompletionMode onComplete = CompletionMode.Stop;
+    [SerializeField] private float completeDelaySeconds = 2f;
+
+
     private bool _caretOn = true;
     private float _caretTimer = 0f;
 
@@ -76,6 +81,8 @@ public class LEDTypewriter : MonoBehaviour
     private List<GlyphToken> _linear;
     private List<LineLayout> _lines;
     private int _offW, _offH;
+
+    public enum CompletionMode { Stop, ClearThenStop, RestartFromBeginning }
 
     private struct GlyphToken
     {
@@ -150,9 +157,10 @@ public class LEDTypewriter : MonoBehaviour
     {
         StopTyping();
         _visibleChars = _linear.Count;
-        RenderPrefix(_visibleChars);
-        OnTypingFinished?.Invoke();
+        RenderPrefix(_visibleChars, drawCaret: false);
+        HandleCompletion();
     }
+
 
     public void SetSpeed(float cps)
     {
@@ -265,8 +273,7 @@ public class LEDTypewriter : MonoBehaviour
 
         _typingRoutine = null;
 
-        RenderPrefix(_linear.Count, drawCaret: false);
-        OnTypingFinished?.Invoke();
+        HandleCompletion();
     }
 
 
@@ -560,5 +567,48 @@ public class LEDTypewriter : MonoBehaviour
 
         return false;
     }
+
+    private void HandleCompletion()
+    {
+        RenderPrefix(_linear.Count, drawCaret: false);
+
+        switch (onComplete)
+        {
+            case CompletionMode.Stop:
+                OnTypingFinished?.Invoke();
+                break;
+
+            case CompletionMode.ClearThenStop:
+                StartCoroutine(CompleteClearRoutine());
+                break;
+
+            case CompletionMode.RestartFromBeginning:
+                StartCoroutine(CompleteRestartRoutine());
+                break;
+        }
+    }
+
+    private IEnumerator CompleteClearRoutine()
+    {
+        if (completeDelaySeconds > 0f)
+        {
+            yield return new WaitForSeconds(completeDelaySeconds);
+        }
+
+        display?.Clear();
+        OnTypingFinished?.Invoke();
+    }
+
+    private IEnumerator CompleteRestartRoutine()
+    {
+        if (completeDelaySeconds > 0f)
+        {
+            yield return new WaitForSeconds(completeDelaySeconds);
+        }
+
+        Prepare(_source);
+        StartTyping();
+    }
+
 
 }

@@ -486,11 +486,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1217804362129308877, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.40673658
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1217804362129308877, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.9135455
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2228527385337703583, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: smoothHour
@@ -506,19 +506,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3196784233559305434, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.8910065
+      value: -0.9659258
       objectReference: {fileID: 0}
     - target: {fileID: 3196784233559305434, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.4539906
+      value: -0.25881913
       objectReference: {fileID: 0}
     - target: {fileID: 7450059195791091528, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.09150166
+      value: -0.00000004371139
       objectReference: {fileID: 0}
     - target: {fileID: 7450059195791091528, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.99580497
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -822,27 +822,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1217804362129308877, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.62325805
+      value: 0.9789248
       objectReference: {fileID: 0}
     - target: {fileID: 1217804362129308877, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.7820162
+      value: -0.20422098
       objectReference: {fileID: 0}
     - target: {fileID: 3196784233559305434, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.8931124
+      value: -0.9745034
       objectReference: {fileID: 0}
     - target: {fileID: 3196784233559305434, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.44983348
+      value: -0.22437286
       objectReference: {fileID: 0}
     - target: {fileID: 7450059195791091528, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.07475473
+      value: -0.017138163
       objectReference: {fileID: 0}
     - target: {fileID: 7450059195791091528, guid: 986f1dfd6cc4916418e5a0627f2b987e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.997202
+      value: -0.99985313
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -857,6 +857,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2123129512}
     m_Modifications:
+    - target: {fileID: 256248271574343164, guid: ce2767f4c68c0634d8e29334e175c0b6, type: 3}
+      propertyPath: text
+      value: 'Hello world! Hello world! Hello world! Hello world! Hello world! Hello
+        world! Hello world! Hello world! Hello world! Hello world! Hello world! '
+      objectReference: {fileID: 0}
+    - target: {fileID: 256248271574343164, guid: ce2767f4c68c0634d8e29334e175c0b6, type: 3}
+      propertyPath: onComplete
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5561549765526126427, guid: ce2767f4c68c0634d8e29334e175c0b6, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
