@@ -278,17 +278,5 @@ public class ArrowClock : MonoBehaviour
             secondHand.gameObject.SetActive(visible);
         }
     }
-
-    [ContextMenu("Set Dial 12 o'clock To Up")]
-    private void SetDialUp()
-    {
-        angleAtTwelve = 0f;
-    }
-
-    [ContextMenu("Set Dial 12 o'clock To Right")]
-    private void SetDialRight()
-    {
-        angleAtTwelve = 90f;
-    }
 }
 
