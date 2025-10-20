@@ -6,6 +6,9 @@ public enum ScrollMode { None, Left, Right, Up, Down }
 
 public class LEDTextRenderer : MonoBehaviour
 {
+    [SerializeField]
+    private bool isAutoplay = true;
+
     [Header("References")]
     [SerializeField]
     private LEDDisplay display;
@@ -57,8 +60,11 @@ public class LEDTextRenderer : MonoBehaviour
 
     void Start()
     {
-        Refresh();
-        StartAnimation();
+        if(isAutoplay)
+        {
+            Refresh();
+            StartAnimation();
+        }
     }
 
     void OnValidate()
@@ -69,14 +75,19 @@ public class LEDTextRenderer : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        StartAnimation();
-    }
-
     void OnDisable()
     {
         StopAnimation();
+    }
+
+    public void SetScrollSpeed(float speed)
+    {
+        scrollSpeedPixelsPerSecond = speed;
+    }
+
+    public void SetLoopGap(int gap)
+    {
+        loopGapPixels = gap;
     }
 
     public void SetText(string value)
@@ -127,7 +138,7 @@ public class LEDTextRenderer : MonoBehaviour
         BlitWindow();
     }
 
-    private void StartAnimation()
+    public void StartAnimation()
     {
         if (_animRoutine != null)
         {
@@ -137,7 +148,7 @@ public class LEDTextRenderer : MonoBehaviour
         _animRoutine = StartCoroutine(Animate());
     }
 
-    private void StopAnimation()
+    public void StopAnimation()
     {
         if (_animRoutine != null)
         {
@@ -146,7 +157,7 @@ public class LEDTextRenderer : MonoBehaviour
         }
     }
 
-    private void RestartAnimation()
+    public void RestartAnimation()
     {
         StopAnimation();
         StartAnimation();
