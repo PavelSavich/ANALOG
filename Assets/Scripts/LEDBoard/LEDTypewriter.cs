@@ -296,10 +296,10 @@ public class LEDTypewriter : MonoBehaviour
                 continue;
             }
 
-            LineLayout line = new LineLayout 
+            LineLayout line = new LineLayout
             {
-                y = y, 
-                widthPixels = 0 
+                y = y,
+                widthPixels = 0
             };
 
             int x = 0;
@@ -326,7 +326,7 @@ public class LEDTypewriter : MonoBehaviour
                 {
                     trailSpaces++;
                     wordPixels += _linear[i].width;
-                    
+
                     if (i + 1 < _linear.Count && _linear[i + 1].isSpace)
                     {
                         wordPixels += font.charSpacing;
@@ -353,13 +353,25 @@ public class LEDTypewriter : MonoBehaviour
                         if (_linear[k].g != null)
                         {
                             x += _linear[k].width;
-
                             if (k + 1 < spacesStart)
                             {
                                 x += font.charSpacing;
                             }
                         }
                         k++;
+                    }
+
+                    for (int s = spacesStart; s < i; s++)
+                    {
+                        line.tokenIndices.Add(s);
+                        if (_linear[s].g != null)
+                        {
+                            x += _linear[s].width;
+                            if (s + 1 < i)
+                            {
+                                x += font.charSpacing;
+                            }
+                        }
                     }
                 }
                 else
@@ -401,6 +413,7 @@ public class LEDTypewriter : MonoBehaviour
         offW = maxWidthPixels;
         offH = Mathf.Max(font.glyphHeight, totalH - font.lineSpacing);
     }
+
 
     private void RenderPrefix(int visibleChars, bool drawCaret = false)
     {
