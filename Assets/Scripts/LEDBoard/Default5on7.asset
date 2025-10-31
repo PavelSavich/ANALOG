@@ -677,6 +677,26 @@ MonoBehaviour:
     - ....
     - .#...
     - .#...
+  - name: Heart
+    character: 60
+    rows:
+    - .#.#.
+    - '##.##'
+    - '#####'
+    - '#####'
+    - '#####'
+    - .###.
+    - ..#..
+  - name: Smiley
+    character: 62
+    rows:
+    - .....
+    - '#...#'
+    - .....
+    - .....
+    - '#...#'
+    - .###.
+    - .....
   undefinedGlyph:
     name: Undefined
     character: 63
